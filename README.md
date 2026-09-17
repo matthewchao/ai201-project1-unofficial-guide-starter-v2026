@@ -21,11 +21,9 @@
 
 ## What This Does
 
-<!-- Three or four sentences. Which corpus you picked, and the kinds of
-     questions your system answers. Write it for someone who has never seen
-     this repo.
-
-     Milestone 5. -->
+I am using the advice_threads corpus.
+This corpus is good for questions from students who want to prepare for whatever comes ahead - whether big decisions about majors or when to do their laundry.
+The corpus is Reddit-like and has answers with their vote counts, so that you can get a sense of whether people generally agree with certain answers or not.
 
 ## Chunking Strategy
 
