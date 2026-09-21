@@ -27,54 +27,58 @@ The corpus is Reddit-like and has answers with their vote counts, so that you ca
 
 ## Chunking Strategy
 
-**Chunk size:**
-**Overlap:**
+**Chunk size:** Dynamic / reply-level (one thread question + one complete response).
+**Overlap:** Structural context overlap (the thread question is prepended to every reply; 0 sliding-window character overlap).
 
-<!-- What about YOUR documents made you pick these numbers? Short posts and
-     long sectioned guides don't want the same chunking, and "800 seemed
-     reasonable" earns nothing. Point at something you noticed when you read
-     the documents in Milestone 1.
-
-     If you changed your mind partway through, say so and say why. That's worth
-     more than pretending you got it right first time.
-
-     Milestone 3. -->
+### Rationale
+The `advice_threads` corpus consists of forum-style discussions where each document contains a main question (`THREAD: ...`) followed by multiple student responses with vote counts. 
+Fixed-character windowing fails here: it cuts across sentences mid-word, produces degenerate tail fragments when documents don't divide evenly, and blends multiple unrelated responses into one chunk.
+### Strategy Rules
+1. **1:1 Reply-to-Chunk Mapping:** For each document with $N$ replies, exactly $N$ chunks are produced.
+2. **Context-Prefixed Content:** Every chunk combines the thread title/question with exactly one complete reply, including its vote count header.
+3. **No Fragmentation:** Chunk boundaries align with natural document sections, ensuring every chunk reads as a complete, standalone thought (satisfying Criterion 4).
 
 ## Sample Chunks
 
-<!-- Five chunks, pasted as text. Label each one and name the file it came from
-     AND the function that produced it — the grader checks your code against
-     what you claim here.
+======================================================================
+Chunk 1  |  source: thread_bike_commute.txt#0  |  produced by: chunker.py::split_documents
+======================================================================
+THREAD: Is a bike worth it for a 20 minute walk commute?
 
-     `python app.py chunks -n 5` prints all three for you. Copy them straight
-     across.
+--- reply 1 (14 votes) ---
+Yeah. Cuts an 18 minute walk to about 6. The thing nobody mentions is storage — covered bike parking exists at three buildings and is full by 9am at all three.
 
-     Milestone 3. -->
+======================================================================
+Chunk 2  |  source: thread_first_gen.txt#1  |  produced by: chunker.py::split_documents
+======================================================================
+THREAD: Anything specific for first-generation students?
 
-**Chunk 1** — source: `` — produced by: ``
+--- reply 2 (41 votes) ---
+The thing I'd say: the unwritten rules are the hard part, not the coursework. Ask about the unwritten rules explicitly. People are happy to explain them and nobody volunteers them.
 
-```
-```
+======================================================================
+Chunk 3  |  source: thread_laptop_specs.txt#2  |  produced by: chunker.py::split_documents
+======================================================================
+THREAD: How much laptop do I actually need for CS courses?
 
-**Chunk 2** — source: `` — produced by: ``
+--- reply 3 (12 votes) ---
+I did two years on an 8GB machine and it was fine until the last project, at which point it very much wasn't. 16 is the answer.
 
-```
-```
+======================================================================
+Chunk 4  |  source: thread_parking.txt#1  |  produced by: chunker.py::split_documents
+======================================================================
+THREAD: Worth getting a parking permit?
 
-**Chunk 3** — source: `` — produced by: ``
+--- reply 2 (21 votes) ---
+Street parking on Verrill is legal and free and unmarked, which is why half the upper years do it.
 
-```
-```
+======================================================================
+Chunk 5  |  source: thread_sleep_schedule.txt#1  |  produced by: chunker.py::split_documents
+======================================================================
+THREAD: Everyone says fix your sleep. Does it actually matter?
 
-**Chunk 4** — source: `` — produced by: ``
-
-```
-```
-
-**Chunk 5** — source: `` — produced by: ``
-
-```
-```
+--- reply 2 (37 votes) ---
+The library being open until 2am is a trap. It's a resource, not a schedule.
 
 ## Sample Answer
 
