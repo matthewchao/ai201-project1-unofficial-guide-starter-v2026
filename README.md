@@ -113,18 +113,15 @@ There is a clear gap between 0.61 and 0.80. The starter's default threshold of 0
 
 ## How I Used AI
 
-<!-- Two specific moments. For each: what you asked for, what came back, and
-     what you changed about it.
+**1. Pressure-testing and refining acceptance criteria (Milestone 2)**
+- **What I asked for:** I asked the AI to review my justifications for my five acceptance criteria in `criteria.md` against the assignment rubric.
+- **What came back:** The AI pointed out that my original justifications explained why the features themselves were desirable in general, rather than justifying the specific numerical targets (e.g. why 4 of 5 instead of 5 of 5, or why at least 1 of 5).
+- **What I changed:** I rewrote the justifications across `criteria.md` to ground them in my actual test questions and corpus structure — specifically noting that some test questions use phrasing that doesn't appear directly in the threads (like "save money" or "secret" study spot) which could cause semantic misses, and explaining why opinion-based threads warrant targeting at least one alternative answer.
 
-     "I asked Claude to write the chunking function from my notes. It ignored
-     the overlap, so I added that myself" is the level of detail we're after.
-     "I used AI to help me code" is not.
-
-     Milestone 5. -->
-
-**1.**
-
-**2.**
+**2. Designing and implementing the custom chunking strategy (Milestone 3)**
+- **What I asked for:** I wanted each chunk to preserve the thread's original question so answers wouldn't lose their meaning (Criterion 4), and asked if I was limited to fixed window/overlap sizes or could pair questions with specific responses.
+- **What came back:** The AI confirmed I could write custom Python logic to pair the thread title with individual replies, but initially proposed a strategy description for the README that hardcoded specific character counts (132 min, 281 max) from the current sample.
+- **What I changed:** I rejected hardcoding those sample-specific counts into the README, insisting that the strategy description remain general and algorithmic (defining a 1:1 reply-to-chunk mapping with structural title overlap). I then had the AI implement this, eliminating naive window slicing and degenerate tail fragments.
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
