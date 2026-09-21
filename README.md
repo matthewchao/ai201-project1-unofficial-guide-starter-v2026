@@ -86,26 +86,30 @@ The library being open until 2am is a trap. It's a resource, not a schedule.
      visible. Milestone 4. -->
 
 **Question:**
+What's the last date to declare a class pass/fail
 
 **Answer:**
+The last date to declare a class pass/fail is week eight (*thread_pass_fail.txt* and *thread_first_year_regret.txt*).
 
-```
-```
+Sources retrieved: thread_first_year_regret.txt, thread_pass_fail.txt
 
-**My relevance cutoff:**
 
-<!-- The number you set in config.py, and how you got there.
-
-     You ran five questions your corpus covers and the five in OUT_OF_SCOPE
-     that it clearly doesn't, and wrote down the best distance for each. What
-     did those two groups look like? Where was the gap? Put the actual numbers
-     here — the table below wants all ten rows.
-
-     Milestone 4. -->
+**My relevance cutoff:** 0.65
+The in-corpus questions had best distances ranging between 0.3285 and 0.6063. The out-of-scope questions had best distances ranging between 0.8075 and 0.8964. 
+There is a clear gap between 0.61 and 0.80. The starter's default threshold of 0.60 was slightly too strict because it barely filtered out the sick-day exam question (0.6063). Placing the cutoff at 0.65 cleanly sits inside the gap: all 5 in-corpus questions are accepted, while all 5 out-of-scope questions are refused.
 
 | Question | In corpus? | Best distance |
 |---|---|---|
-|  |  |  |
+| Any strategies to save money on textbooks | Yes | 0.5015 |
+| The best secret study spot? | Yes | 0.4341 |
+| What's the last date to declare a class pass/fail | Yes | 0.3285 |
+| What do I do if I get sick the day of an exam? | Yes | 0.6063 |
+| What are office hours usually like | Yes | 0.4671 |
+| What is the capital of Mongolia? | No | 0.8935 |
+| How do I change the oil in a diesel engine? | No | 0.8964 |
+| Who won the 1994 World Cup? | No | 0.8934 |
+| What is the recommended dosage of ibuprofen for a headache? | No | 0.8075 |
+| How do I write a for loop in Rust? | No | 0.8348 |
 
 ## How I Used AI
 
