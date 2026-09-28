@@ -222,26 +222,20 @@ Based on the provided documents, there is no mention of a "secret" study spot. H
 | 3 | Gate stops out-of-corpus questions | MET | The relevance gate refused all 5 out-of-scope questions (best distance was 0.807 against the 0.65 threshold), meeting the 4 of 5 target across all runs. |
 | 4 | Every chunk contains question and answer | MET | `chunker.py::split_documents` prepends the `THREAD:` title to every reply block, ensuring 100% of chunks contain both the question and one answer. |
 | 5 | At least one answer gives an alternative | MET | In all three runs, at least 2 questions (textbook savings and study spots) provided alternative or secondary answers, exceeding the target of at least 1 of 5. |
-
 ## Diagnoses
 
-<!-- For each miss: which stage caused it, and how. The stage alone isn't
-     enough — you need the mechanism.
+### Criterion 2: Every answer names a source (Missed on Run 2)
 
-     Not a diagnosis: "Question 3 didn't work."
-     A diagnosis:     "Question 3 asks about laundry costs. The answer is in
-                       one sentence that got split across two chunks, so
-                       neither chunk on its own contains it."
+- **Failed question:** *"What do I do if I get sick the day of an exam?"*
+- **Stage:** **Generation** (triggered by **Loading** and **Retrieval**)
 
-     The five stages: loading → chunking → embedding → retrieval → generation.
+**What happened:**
+1. **Loading:** The documents don't actually have an answer about missing an exam. The closest thread is `thread_late_work.txt`, which only talks about handing in late homework.
+2. **Retrieval & Gate:** Retrieval matched on words like "sick" and "illness" and returned `thread_late_work.txt` at distance 0.606. Because my cutoff was set to 0.65, this slipped past the gate when it should have been stopped.
+3. **Generation:** In Run 2, the Gemini model saw that the chunks didn't answer the question and followed the prompt rule: *"If the documents don't cover the question, say you don't have enough information."* It replied *"I do not have enough information to answer your question from the provided documents."* Because it didn't use any file, it didn't name a file, leaving Run 2 at 4 of 5.
 
-     Look for a pattern. If three misses all ask about numbers, that's one
-     problem, not three.
-
-     Missed nothing? Say so, then say honestly whether your targets were set
-     low, and which one you'd tighten and to what.
-
-     Milestone 3. -->
+**Pattern:**
+This was the only failure across all five questions. When a question has no answer in the documents but passes the gate anyway, the model is inconsistent: in Runs 1 and 3 it tried to answer using the late work thread and named the file, but in Run 2 it refused and named no file.
 
 ## The Improvement
 
