@@ -217,11 +217,11 @@ Based on the provided documents, there is no mention of a "secret" study spot. H
 
 | # | Criterion | Verdict | How I decided |
 |---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
+| 1 | Retrieved chunk contains the answer | MET | Across all three runs, 4 of 5 questions consistently had the answer in the top retrieved chunks (Question 4 was the only miss, retrieving late-work threads instead of exam policy). |
+| 2 | Every answer names a source | MISSED | Target was 5 of 5; while Runs 1 and 3 achieved 5/5, Run 2 scored 4/5 because Question 4 produced a fallback refusal statement without citing any source filename. |
+| 3 | Gate stops out-of-corpus questions | MET | The relevance gate refused all 5 out-of-scope questions (best distance was 0.807 against the 0.65 threshold), meeting the 4 of 5 target across all runs. |
+| 4 | Every chunk contains question and answer | MET | `chunker.py::split_documents` prepends the `THREAD:` title to every reply block, ensuring 100% of chunks contain both the question and one answer. |
+| 5 | At least one answer gives an alternative | MET | In all three runs, at least 2 questions (textbook savings and study spots) provided alternative or secondary answers, exceeding the target of at least 1 of 5. |
 
 ## Diagnoses
 
