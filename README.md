@@ -240,33 +240,25 @@ This was the only failure across all five questions. When a question has no answ
 ## The Improvement
 
 **What I changed:**
+In `generate.py`, I updated `GROUNDING_INSTRUCTION` so that Rule 3 explicitly instructs the model to always name the document(s) provided in the excerpts, even when stating that there is not enough information to answer.
 
 **Why I picked it:**
+My diagnosis showed that Criterion 2 missed on Run 2 because the model followed the prompt rule to refuse an uncovered question, but omitted the source filename because it did not use the document to answer. 
 
-<!-- Connect it to a specific diagnosis above in one sentence. If you can't,
-     you picked a fix because it sounded impressive. -->
+*(Note on test questions: Although my Question 4 turned out to be an edge case not explicitly answerable by the corpus, I kept the test questions identical rather than swapping it out. Changing questions after seeing the results would have invalidated the before-and-after comparison.)*
 
 ### Run Log — After
 
-<!-- Same format, same five criteria, three runs each.
-     `python run_eval.py --label after` -->
-
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 4/5 | 4/5 | 4/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Every chunk contains question and answer | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. At least one answer gives an alternative | 1 of 5 | 1/5 | 1/5 | 1/5 | MET |
 
 **Did it help?**
-
-<!-- Say plainly whether it did, and how you know. If it made things worse,
-     say that — a change that backfired, honestly reported, earns full credit
-     and is more interesting than one that worked. What matters is that you can
-     tell.
-
-     Milestone 4. -->
+Yes. In the after run, Question 4 cited `thread_late_work.txt` across all three runs while still properly stating that the documents did not have enough information about exams. Criterion 2 improved from 4/5 on Run 2 to 5/5 across all three runs, moving from MISSED to MET, while all other criteria remained MET.
 
 ## What's Still Broken
 
