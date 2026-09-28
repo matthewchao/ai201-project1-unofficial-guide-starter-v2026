@@ -151,15 +151,58 @@ There is a clear gap between 0.61 and 0.80. The starter's default threshold of 0
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 4/5 | 4/5 | 4/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 4/5 | 5/5 | MISSED |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Every chunk contains question and answer | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. At least one answer gives an alternative | 1 of 5 | 2/5 | 2/5 | 2/5 | MET |
 
-<!-- Underneath, paste the REAL output for each criterion from one of your
-     runs — the actual text your system produced, not a description of it.
-     Name the file and function that produced it. -->
+### Output for each criterion
+
+#### Criterion 1: Retrieved chunk contains the answer
+- **Question:** The best secret study spot?
+- **Produced by:** `store.py::search` (source: `thread_study_spots.txt`, distance: 0.5360)
+```text
+THREAD: Best study spots that aren't the library?
+
+--- reply 2 (19 votes) ---
+The science building has open lounges on floors 2 through 5 that are unlocked and almost always empty.
+```
+
+#### Criterion 2: Every answer names a source
+- **Question:** Any strategies to save money on textbooks (Run 1)
+- **Produced by:** `generate.py::answer_from_chunks`
+```text
+You can check the numbering of your textbook against the library reserve copy for free, as the library reserve copy is always the current edition (thread_textbook_editions.txt). Additionally, an emergency fund for textbooks exists and is not means-tested beyond a short form (thread_first_gen.txt).
+```
+- *Miss on Run 2 (Question: What do I do if I get sick the day of an exam?):*
+```text
+I do not have enough information to answer your question from the provided documents.
+```
+
+#### Criterion 3: Gate stops out-of-corpus questions
+- **Question:** What is the capital of Mongolia?
+- **Produced by:** `gate.py::check` / `run_eval.py::check_out_of_scope` (Best distance: 0.893 vs cutoff 0.65)
+```text
+refused (best distance 0.893)
+I don't have enough information about that.
+```
+
+#### Criterion 4: Every chunk contains question and answer
+- **Produced by:** `chunker.py::split_documents` (source: `thread_first_gen.txt#1`)
+```text
+THREAD: Anything specific for first-generation students?
+
+--- reply 2 (41 votes) ---
+The thing I'd say: the unwritten rules are the hard part, not the coursework. Ask about the unwritten rules explicitly. People are happy to explain them and nobody volunteers them.
+```
+
+#### Criterion 5: At least one answer gives an alternative
+- **Question:** The best secret study spot? (Run 1)
+- **Produced by:** `generate.py::answer_from_chunks`
+```text
+Based on the provided documents, there is no mention of a "secret" study spot. However, the thread about study spots mentions Ridgeway Café before 10am, open lounges in the science building, and the library's third floor or group study rooms (thread_study_spots.txt).
+```
 
 ## Verdicts
 
