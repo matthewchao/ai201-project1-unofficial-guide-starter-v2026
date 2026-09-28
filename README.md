@@ -124,8 +124,12 @@ There is a clear gap between 0.61 and 0.80. The starter's default threshold of 0
 - **What came back:** The AI confirmed I could write custom Python logic to pair the thread title with individual replies, but initially proposed a strategy description for the README that hardcoded specific character counts (132 min, 281 max) from the current sample.
 - **What I changed:** I rejected hardcoding those sample-specific counts into the README, insisting that the strategy description remain general and algorithmic (defining a 1:1 reply-to-chunk mapping with structural title overlap). I then had the AI implement this, eliminating naive window slicing and degenerate tail fragments.
 
+**3. Diagnosing pipeline failure patterns and testing fixes (Unit 2)**
+- **What I asked for:** I asked the AI to analyze why Question 4 dropped its source citation on Run 2, and what commands would trace the question through each pipeline stage.
+- **What came back:** The AI helped trace Question 4 across the pipeline, showing that retrieval was deterministic while generation was stochastic across runs. It pointed out the conflict in the prompt between refusing when information is missing and citing a source document.
+- **What I changed:** Instead of changing the question or the recommended action of tweaking the gate cutoff (which would have still returned a canned refusal without a source citation), I updated the grounding prompt in `generate.py` to always cite reviewed excerpts even when stating that information is missing. I then validated the fix across multiple runs.
+
 <!-- ── Stretch features ─────────────────────────────────────────────────────
-     Doing one? Say so here BEFORE you start. A feature this README never
      claims earns nothing.
      ───────────────────────────────────────────────────────────────────────── -->
 
@@ -262,17 +266,11 @@ Yes. In the after run, Question 4 cited `thread_late_work.txt` across all three 
 
 ## What's Still Broken
 
-<!-- For each criterion still missed after your fix: what you'd do about it,
-     and why you stopped where you did.
+While all five criteria met their targets in the after run, the pipeline still has an underlying weakness: Question 4 (*"What do I do if I get sick the day of an exam?"*) is not actually answerable from the corpus. Because the relevance cutoff is 0.65, Question 4 slips past the gate at distance 0.606 and retrieves `thread_late_work.txt`. Our updated prompt ensures the model cites that thread while stating it lacks exam details, but the system still cannot give the user a real exam answer.
 
-     "I ran out of time" is fine if it's true. Pretending nothing is left is
-     not.
-
-     Milestone 5. -->
+To fix this properly, I would either add an explicit exam policy thread to the corpus or tighten the gate cutoff to 0.60 so the gate cleanly stops the question upfront. I stopped here because the assignment limits us to one measured fix, and tightening the prompt successfully resolved the citation inconsistency across all runs.
 
 ## What I'd Do Differently
 
-<!-- Knowing what you know now — which of your five criteria would you write
-     differently, and why?
-
-     Milestone 5. -->
+1. **Criterion 2 ("Every answer names a source"):** In the next unit, I would reword this to: *"Every answer to an in-corpus question names a source"* or *"Every answer that provides advice names a source."* Demanding a source citation even when the system legitimately refuses an unanswerable question created a conflict between the refusal instruction and the citation requirement.
+2. **Test Question Selection:** Before locking in test questions, I would search the documents directly to verify that every question has a clear, direct answer in the corpus, rather than assuming a related topic (late homework) covers exam policy.
